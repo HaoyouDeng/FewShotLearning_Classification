@@ -11,7 +11,6 @@ import glob
 import json
 from tqdm import tqdm
 
-import configs
 from methods import backbone
 from data.datamgr import SimpleDataManager, SetDataManager
 from methods.baselinetrain import BaselineTrain
@@ -33,29 +32,24 @@ def train(base_loader, val_loader, model, optimization, start_epoch, stop_epoch,
 
     max_acc = 0
     max_epoch = 0
-
-    for epoch in tqdm(range(start_epoch, stop_epoch), total=(stop_epoch-start_epoch)):
+    tqdm_gen = tqdm(range(start_epoch, stop_epoch), total=(stop_epoch-start_epoch), ncols=100)
+    for epoch in tqdm_gen:
         # train
         model.train()
-        # logger.info('Epoch {} start training...'.format(epoch))
-        epoch_loss = model.train_loop(epoch, base_loader,  optimizer ) #model are called by reference, no need to return 
-        # logger.info('train loss: {}'.format(epoch_loss))
+        epoch_loss = model.train_loop(epoch, base_loader,  optimizer)
         tb_writer.add_scalar('train_loss', epoch_loss, epoch)
 
         # val
         model.eval()
         acc_mean, acc_std = model.test_loop(val_loader)
         tb_writer.add_scalar('val_acc', acc_mean, epoch)
-        # logger.info('%d Test Acc = %4.2f%% +- %4.2f%%' %(len(val_loader),  acc_mean, 1.96* acc_std/np.sqrt(len(val_loader))))
+        tqdm_gen.set_description('%d Test Acc = %4.2f%% +- %4.2f%%' %(len(val_loader),  acc_mean, 1.96* acc_std/np.sqrt(len(val_loader))))
 
         if acc_mean > max_acc : #for baseline and baseline++, we don't use validation in default and we let acc = -1, but we allow options to validate with DB index
-            # logger.info("best model! save...")
             max_acc = acc_mean
             max_epoch = epoch
             outfile = os.path.join(params.checkpoint_dir, 'best_model.tar')
             torch.save({'epoch':epoch, 'state':model.state_dict()}, outfile)
-        # else:
-            # logger.info("Not best! Best accuracy {:f}, Best epoch:{}".format(max_acc, max_epoch))
 
         if (epoch % params.save_freq==0) or (epoch==stop_epoch-1):
             outfile = os.path.join(params.checkpoint_dir, '{:d}.tar'.format(epoch))
@@ -207,16 +201,6 @@ if __name__=='__main__':
         else:
             raise ValueError('No warm_up file')
 
-    # params.fix_layers = 2
-
-    # if params.fix_layers is not None:
-    #     fix_dic = torch.tensor([0,9,18,27,36])
-    #     for k, (name,weight) in enumerate(model.named_parameters()):
-    #         if k < fix_dic[params.fix_layers]:
-    #             weight.requires_grad=False
-    #     for k, (name,weight) in enumerate(model.named_parameters()):
-    #         logger.info('{} {}:{}'.format(k, name, weight.requires_grad))
-   
     logger.info('Start training...')
     model = train(base_loader, val_loader,  model, optimization, start_epoch, stop_epoch, params)
     logger.success('Finish training')
