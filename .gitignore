@@ -1,0 +1,12 @@
+__pycache__/
+.vscode/
+
+filelists/*/*.json
+
+checkpoints/*
+!checkpoints/Pretrain
+
+logs/*
+record/*
+scripts/*
+output/*
