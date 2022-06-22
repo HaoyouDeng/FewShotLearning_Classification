@@ -9,6 +9,11 @@ For few-shot learning and cross-domain few-shot learning, we use datasets: miniI
 
 For downloading and using datasets, refer to [CDFSL-ATA](https://github.com/Haoqing-Wang/CDFSL-ATA).
 
+## Pretrain
+To get a pretrain backbone model.
+```
+python train.py --dataset miniImagenet --model [backbone] --method baseline --train_aug --not_warmup --name pretrain_[backbone] -g [GPU]
+```
 ## Single domain
 - Baseline( pretrain & fine-tune)
 ```
