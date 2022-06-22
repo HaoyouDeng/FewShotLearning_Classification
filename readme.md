@@ -36,9 +36,9 @@ python train.py --model [backbone] --method [method] --n_shot 1 --name [method]_
 python train.py --model [backbone] --method [method] --n_shot 5 --name [method]_5s --train_aug -g [GPU]
 
 # Test
-python test.py --model [backbone] --method [method] --n_shot 1 --name [method]_1s -g [GPU]
+python test.py --testset [target_dataset] --model [backbone] --method [method] --n_shot 1 --name [method]_1s -g [GPU]
 
-python test.py --model [backbone] --method [method] --n_shot 5 --name [method]_5s -g [GPU]
+python test.py --testset [target_dataset] --model [backbone] --method [method] --n_shot 5 --name [method]_5s -g [GPU]
 ```
 
 ## Note
