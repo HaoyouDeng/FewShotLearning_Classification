@@ -200,6 +200,8 @@ if __name__=='__main__':
             model.feature.load_state_dict(state)
         else:
             raise ValueError('No warm_up file')
+    else:
+        logger.info('not use pretrain model')
 
     logger.info('Start training...')
     model = train(base_loader, val_loader,  model, optimization, start_epoch, stop_epoch, params)
