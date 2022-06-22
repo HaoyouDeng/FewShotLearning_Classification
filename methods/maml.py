@@ -72,7 +72,7 @@ class MAML(MetaTemplate):
 
         return loss
 
-    def train_loop(self, epoch, train_loader, optimizer): #overwrite parrent function
+    def train_loop(self, epoch, train_loader, optimizer, total_it): #overwrite parrent function
         # print_freq = 10
         avg_loss=0
         task_count = 0
@@ -98,11 +98,13 @@ class MAML(MetaTemplate):
                 task_count = 0
                 loss_all = []
             optimizer.zero_grad()
+            total_it += 1
+
             # if i % print_freq==0:
             #     logger.info('Epoch {:d} | Batch {:d}/{:d} | Loss {:f}'.format(epoch, i, len(train_loader), avg_loss/float(i+1)))
         epoch_loss = avg_loss/len(train_loader)
         
-        return epoch_loss
+        return epoch_loss, total_it
                       
     def test_loop(self, test_loader, return_std = True): #overwrite parrent function
         correct =0

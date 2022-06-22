@@ -31,8 +31,9 @@ if __name__ == '__main__':
     torch.cuda.set_device(GPU)
     CUDA = 'cuda:' + str(GPU)
 
+    params.checkpoint_dir = '%s/%s'%(params.save_dir, params.name)
     start_time = time.strftime("%Y_%m_%d_%H_%M_%S", time.localtime()) 
-    logger.add('./logs/test/{}/{}.log'.format(params.name, start_time))
+    logger.add('{}/logs/test/{}.log'.format(params.checkpoint_dir, start_time))
 
     acc_all = []
     iter_num = 2000

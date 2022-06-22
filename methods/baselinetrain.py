@@ -32,7 +32,7 @@ class BaselineTrain(nn.Module):
         y = Variable(y.cuda())
         return self.loss_fn(scores, y )
     
-    def train_loop(self, epoch, train_loader, optimizer):
+    def train_loop(self, epoch, train_loader, optimizer, total_it):
         print_freq = 10
         avg_loss=0
 
@@ -44,15 +44,16 @@ class BaselineTrain(nn.Module):
 
             avg_loss = avg_loss+loss.item()
 
-            if i % print_freq==0:
-                #print(optimizer.state_dict()['param_groups'][0]['lr'])
-                print('Epoch {:d} | Batch {:d}/{:d} | Loss {:f}'.format(epoch, i, len(train_loader), avg_loss/float(i+1)  ))
+            total_it += 1
+        epoch_loss = avg_loss/len(train_loader)
+
+        return epoch_loss, total_it
                      
     def test_loop(self, val_loader):
         if self.DBval:
             return self.analysis_loop(val_loader)
         else:
-            return -1   #no validation, just save model during iteration
+            return -1, -1   #no validation, just save model during iteration
 
     def analysis_loop(self, val_loader, record = None):
         class_file  = {}
@@ -71,7 +72,7 @@ class BaselineTrain(nn.Module):
         
         DB = DBindex(class_file)
         print('DB index = %4.2f' %(DB))
-        return 1/DB #DB index: the lower the better
+        return 1/DB, 0 #DB index: the lower the better
 
 def DBindex(cl_data_file):
     #For the definition Davis Bouldin index (DBindex), see https://en.wikipedia.org/wiki/Davies%E2%80%93Bouldin_index
