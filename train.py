@@ -84,7 +84,7 @@ if __name__=='__main__':
     # define logger
     start_time = time.strftime("%Y_%m_%d_%H_%M_%S", time.localtime()) 
     logger.add('{}/logs/train/{}.log'.format(params.checkpoint_dir, start_time))
-    log_writer_dir = os.path.join(params.checkpoint_dir, 'logs/tb_log/{}/'.format(params.name))
+    log_writer_dir = os.path.join(params.checkpoint_dir, 'logs/tb_log/')
     tb_writer = SummaryWriter(log_dir=log_writer_dir)
 
     params_path = os.path.join(params.checkpoint_dir, 'logs/params.json')
