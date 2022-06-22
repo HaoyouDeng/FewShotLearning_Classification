@@ -14,43 +14,31 @@ To get a pretrain backbone model.
 ```
 python train.py --dataset miniImagenet --model [backbone] --method baseline --train_aug --not_warmup --name pretrain_[backbone] -g [GPU]
 ```
-## Single domain
-- Baseline( pretrain & fine-tune)
+## Train & Test
+- Baseline or Baseline++ (pretrain & fine-tune)
 ```
 # Train
+python train.py --dataset miniImagenet --model [backbone] --method baseline --name baseline --train_aug -g [GPU]
+
+python train.py --dataset miniImagenet --model [backbone] --method baseline++ --name baseline++ --train_aug -g [GPU]
+
 # Test
+python test.py --testset [target_dataset] --model [backbone] --method baseline --n_shot [1/5] --name baseline --train_aug -g [GPU]
+
+python test.py --testset [target_dataset] --model [backbone] --method baseline++ --n_shot [1/5] --name baseline --train_aug -g [GPU]
 ```
+
 - Meta-learning method(MatchingNet, ProtoNet and MAML)
 ```
 # Train
-# Test
-```
+python train.py --model [backbone] --method [method] --n_shot 1 --name [method]_1s --train_aug -g [GPU]
 
-## Cross domain
-- Baseline
-```
-# Train
-python train.py --dataset miniImagenet --method baseline --name baseline --train_aug
+python train.py --model [backbone] --method [method] --n_shot 5 --name [method]_5s --train_aug -g [GPU]
 
 # Test
-python test.py --testset [target_dataset] --method baseline --name baseline --train_aug
-```
-- Baseline++
-```
-# Train
-python train.py --dataset miniImagenet --method baseline++ --name baseline++ --train_aug
+python test.py --model [backbone] --method [method] --n_shot 1 --name [method]_1s -g [GPU]
 
-# Test
-python test.py --testset [target_dataset] --method baseline --name baseline++ --train_aug
-```
-
-- Meta-learning method (MatchingNet, ProtoNet, RelationNet and MAML)
-```
-# Train
-python train.py --model ResNet10 --method [method] --n_shot 1 --name [method]_1s --train_aug --num_workers 8 -g 0 --tag [method]_baseline
-
-# Test
-python test.py --model ResNet10 --method [method] --n_shot 1 --name [method]_1s --num_workers 8 -g 0 --tag [method]_baseline 
+python test.py --model [backbone] --method [method] --n_shot 5 --name [method]_5s -g [GPU]
 ```
 
 ## Note
