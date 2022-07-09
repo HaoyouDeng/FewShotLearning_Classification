@@ -185,7 +185,7 @@ if __name__=='__main__':
         if params.warmup_file is not None:
             warmup_resume_file = params.warmup_file
         else:
-            warmup_resume_file = './checkpoints/Pretrain/399.tar'
+            warmup_resume_file = './checkpoints/Pretrain/{}.tar'.format(params.model)
         logger.info('load pretrain model checkpoint file dir:{}'.format(warmup_resume_file))
         tmp = torch.load(warmup_resume_file, map_location=CUDA)
         if tmp is not None: 
