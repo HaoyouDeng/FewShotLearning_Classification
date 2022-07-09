@@ -32,11 +32,12 @@ def train(base_loader, val_loader, model, optimization, start_epoch, stop_epoch,
 
     max_acc = 0
     max_epoch = 0
+    total_it = 0
     tqdm_gen = tqdm(range(start_epoch, stop_epoch), total=(stop_epoch-start_epoch), ncols=100)
     for epoch in tqdm_gen:
         # train
         model.train()
-        epoch_loss = model.train_loop(epoch, base_loader,  optimizer)
+        epoch_loss, total_it = model.train_loop(epoch, base_loader, optimizer, total_it)
         tb_writer.add_scalar('train_loss', epoch_loss, epoch)
 
         # val
