@@ -90,14 +90,6 @@ if __name__ == '__main__':
     logger.info('Load checkpoint: {}'.format(checkpoint_dir))
     logger.info('Epoch: {}'.format(tmp['epoch']))
 
-    if params.fix_layers is not None:
-        fix_dic = torch.tensor([0,9,18,27,36])
-        for k, (name,weight) in enumerate(model.named_parameters()):
-            if k < fix_dic[params.fix_layers]:
-                weight.requires_grad=False
-        for k, (name,weight) in enumerate(model.named_parameters()):
-            logger.info('{} {}:{}'.format(k, name, weight.requires_grad))
-
     logger.info('Start testing...')
 
     if params.method in ['maml', 'maml_approx']: #maml do not support testing with feature
@@ -114,14 +106,3 @@ if __name__ == '__main__':
             acc_mean, acc_std = model.test_loop( novel_loader)
     
     logger.success('%d Test Acc = %4.2f%% +- %4.2f%%' %(iter_num,  acc_mean, 1.96* acc_std/np.sqrt(iter_num)))
-    
-    with open('./record/results.txt' , 'a') as f:
-        timestamp = time.strftime("%Y%m%d-%H%M%S", time.localtime()) 
-        # aug_str = '-aug' if params.train_aug else ''
-        # aug_str += '-adapted' if params.adaptation else ''
-        if params.method in ['baseline', 'baseline++'] :
-            exp_setting = '%s-%s-%s%s %sshot %sway_test' %(params.name, params.dataset, params.model, params.method, params.n_shot, params.test_n_way )
-        else:
-            exp_setting = '%s-%s-%s%s %sshot %sway_train %sway_test' %(params.name, params.dataset,  params.model, params.method , params.n_shot , params.train_n_way, params.test_n_way )
-        acc_str = '%d Test Acc = %4.2f%% +- %4.2f%%' %(iter_num, acc_mean, 1.96* acc_std/np.sqrt(iter_num))
-        f.write( 'Time: %s, Setting: %s, Acc: %s \n' %(timestamp,exp_setting,acc_str)  )
